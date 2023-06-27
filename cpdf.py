@@ -63,7 +63,6 @@ def cli(compress: bool, merge: bool, version: bool) -> None:
 
 def merge_pdf(pdf_files: List[str]) -> None:
     """合并"""
-    print(pdf_files)
     merging_files = questionary.checkbox(
         "选择想要合并的 pdf",
         choices=pdf_files
@@ -75,10 +74,10 @@ def merge_pdf(pdf_files: List[str]) -> None:
     output = verify_output("merged.pdf", "merged.pdf")
     if not output:
         return
-    input_files_str = ' '.join(merging_files)
+    input_files_str = ' '.join(['"' + file + '"' for file in merging_files])
     command = f'gs -q -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile="{output}" {input_files_str} -c quit'
     subprocess.run(command, shell=True)
-
+    click.echo("合并中...")
     click.echo(f"合并成功！. 输出文件：{output}")
 
 
